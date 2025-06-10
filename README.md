@@ -74,8 +74,11 @@ Open in Browser: Open the index.html file directly in your web browser (like Chr
 
 Firebase Configuration (Note for Development): The project uses special global settings (__app_id and __firebase_config) for Firebase. These are usually given automatically in environments like Canvas. If you want to connect your own Firebase project on your computer, you might need to put your Firebase project details into these settings or directly into the initializeApp() function. But it will work fine in the Canvas environment as is.
 
+
 🤝 Contribution
 You can help the IDEA community by sharing your project ideas. Your feedback for making things better is always welcome!
+
+Project Links: https://nurhayatyavuz.github.io/Project_idea/ 
 
  
 
