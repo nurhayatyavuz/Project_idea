@@ -65,7 +65,7 @@ Modal Structures: These are hidden HTML parts for the idea editing pop-up and th
 
 <script type="module">: All the JavaScript code is in this module. It includes Firebase setup, how to find HTML elements, idea data, main app functions, and event listeners.
 
- ## Setup and Running
+📦 Setup and Running
 This project is just one HTML file, so it's quite simple to set up:
 
 Create index.html: Copy the HTML code above and save it as index.html on your computer.
@@ -74,8 +74,8 @@ Open in Browser: Open the index.html file directly in your web browser (like Chr
 
 Firebase Configuration (Note for Development): The project uses special global settings (__app_id and __firebase_config) for Firebase. These are usually given automatically in environments like Canvas. If you want to connect your own Firebase project on your computer, you might need to put your Firebase project details into these settings or directly into the initializeApp() function. But it will work fine in the Canvas environment as is.
 
- ## Contribution
+🤝 Contribution
 You can help the IDEA community by sharing your project ideas. Your feedback for making things better is always welcome!
 
-
+ 
 
