@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDEA</title>
+  
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+       
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">IDEA</h1>
+        <p class="text-gray-600 mb-8">
+            Henüz hayata geçmemiş veya güncellenmeyi bekleyen özgün proje fikirleri keşfedin. İlham almak için bir kategori seçin veya rastgele bir fikir üretin.
+        </p>
+
+      
+        <div class="mb-6">
+            <label for="category-select" class="block text-lg font-medium text-gray-700 mb-2">
+                Kategori Seç:
+            </label>
+            <select
+                id="category-select"
+                class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+            >
+                <option value="Hepsi">Hepsi</option>
+              
+            </select>
+        </div>
+
+        
+        <div class="flex justify-center gap-4 mb-8">
+            <button
+                id="generate-idea-btn"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+            >
+                Fikir Üret!
+            </button>
+        </div>
+
+        
+        <div id="generated-idea-display" class="mt-8 p-6 bg-indigo-50 border border-indigo-200 rounded-lg text-left hidden">
+            <h2 id="idea-title" class="text-2xl font-semibold text-indigo-800 mb-2"></h2>
+            <p id="idea-description" class="text-gray-700"></p>
+        </div>
+
+       
+        <div class="mt-12 p-6 bg-blue-50 border border-blue-200 rounded-lg text-left">
+            <h2 class="text-xl font-semibold text-blue-800 mb-2">Hakkında</h2>
+            <p class="text-gray-700">
+                Bu proje tamamen ihtiyaca yönelik oluşturulmuştur. Nasıl mı? Kendini geliştirmek isteyen ancak fikir bulmakta kendini tüketen arkadaşlar için bir kurtuluş yolu! Beyin fırtınası yapmaktan yorulan, yeni bir projeye başlamak için ilham arayan veya sadece farklı düşüncelere dalmak isteyen herkes için tasarlandı. Burada, eşi benzeri olmayan veya henüz gün yüzüne çıkmamış, farklı alanlara yönelik fikirler bulabilirsin. Hayallerine giden yolda ilk adımı atmak için tek yapman gereken bir kategori seçip 'Fikir Üret!' düğmesine basmak. Belki de bir sonraki büyük projen, tam da burada seni bekliyor!
+            </p>
+        </div>
+
+       
+        <div class="mt-12 p-6 bg-gray-100 border border-gray-300 rounded-lg text-left">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Fikir Paylaş</h2>
+            <p id="login-status" class="text-gray-600 mb-4 text-center">Giriş yapılıyor...</p>
+
+            <div id="idea-submission-section" class="hidden">
+                <div class="mb-4">
+                    <label for="idea-category" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Kategorisi:
+                    </label>
+                    <select id="idea-category" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                       
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="idea-title-input" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Başlığı:
+                    </label>
+                    <input type="text" id="idea-title-input" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Proje fikrinizin başlığı">
+                </div>
+                <div class="mb-6">
+                    <label for="idea-description-input" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Açıklaması:
+                    </label>
+                    <textarea id="idea-description-input" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32 resize-none" placeholder="Proje fikrinizin detaylı açıklaması"></textarea>
+                </div>
+                <button id="submit-idea-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                    Fikrimi Paylaş
+                </button>
+            </div>
+        </div>
+
+        
+        <div id="user-ideas-section" class="mt-12 p-6 bg-purple-50 border border-purple-200 rounded-lg text-left hidden">
+            <h2 class="text-xl font-semibold text-purple-800 mb-4">Paylaştığım Fikirler</h2>
+            <div id="user-ideas-list" class="space-y-4">
+            
+            </div>
+            <p id="no-user-ideas" class="text-gray-600 mt-4 hidden">Henüz paylaştığınız bir fikir yok.</p>
+        </div>
+
+       
+        <div id="edit-idea-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+                <h3 class="text-xl font-bold mb-4">Fikri Düzenle</h3>
+                <div class="mb-4">
+                    <label for="edit-idea-category" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Kategorisi:
+                    </label>
+                    <select id="edit-idea-category" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                       
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-idea-title-input" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Başlığı:
+                    </label>
+                    <input type="text" id="edit-idea-title-input" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-6">
+                    <label for="edit-idea-description-input" class="block text-gray-700 text-sm font-bold mb-2">
+                        Fikir Açıklaması:
+                    </label>
+                    <textarea id="edit-idea-description-input" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32 resize-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button id="cancel-edit-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg">İptal</button>
+                    <button id="save-edit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Kaydet</button>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="custom-message-box" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
+                <p id="message-box-text" class="text-gray-800 text-lg mb-4"></p>
+                <div class="flex justify-center gap-3">
+                    <button id="message-box-ok-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Tamam</button>
+                    <button id="message-box-cancel-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg hidden">İptal</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+    <script type="module">
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, addDoc, collection, onSnapshot, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let userId = null; 
+        let userIdeas = []; 
+        let currentEditingIdeaId = null; 
+
+        
+        const categorySelect = document.getElementById('category-select'); 
+        const generateIdeaBtn = document.getElementById('generate-idea-btn');
+        const generatedIdeaDisplay = document.getElementById('generated-idea-display');
+        const ideaTitleDisplay = document.getElementById('idea-title');
+        const ideaDescriptionDisplay = document.getElementById('idea-description');
+        const loginStatus = document.getElementById('login-status'); 
+        const ideaSubmissionSection = document.getElementById('idea-submission-section'); 
+        const ideaCategoryInput = document.getElementById('idea-category'); 
+        const ideaTitleInput = document.getElementById('idea-title-input');
+        const ideaDescriptionInput = document.getElementById('idea-description-input');
+        const submitIdeaBtn = document.getElementById('submit-idea-btn');
+
+        const userIdeasSection = document.getElementById('user-ideas-section'); 
+        const userIdeasList = document.getElementById('user-ideas-list');
+        const noUserIdeas = document.getElementById('no-user-ideas');
+
+        const editIdeaModal = document.getElementById('edit-idea-modal'); 
+        const editIdeaCategoryInput = document.getElementById('edit-idea-category');
+        const editIdeaTitleInput = document.getElementById('edit-idea-title-input');
+        const editIdeaDescriptionInput = document.getElementById('edit-idea-description-input');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const saveEditBtn = document.getElementById('save-edit-btn');
+
+        const customMessageBox = document.getElementById('custom-message-box'); 
+        const messageBoxText = document.getElementById('message-box-text');
+        const messageBoxOkBtn = document.getElementById('message-box-ok-btn');
+        const messageBoxCancelBtn = document.getElementById('message-box-cancel-btn');
+
+
+
+        const staticProjectIdeas = {
+            'Sosyal Sorumluluk': [
+                { title: "Gizli İhtiyaç Haritası", description: "Mahallenizdeki yardıma muhtaç ama görünmeyen bireyleri, gönüllüler ve destek kuruluşlarıyla anonim olarak buluşturan bir platform." },
+                { title: "Yaşayan Kütüphane 2.0", description: "Kitaplar yerine insanların hikayelerini ödünç alıp dinleyebileceğiniz, empati odaklı bir dijital platform." },
+                { title: "Atık Sanat Projesi", description: "Şehrin atık toplama noktalarından çıkan malzemelerle kamusal alanlara geçici sanat enstalasyonları yapan ve farkındalık oluşturan bir inisiyatif." },
+                { title: "Sanal Mahalle Konseyi", description: "Mahalle bazında sanal bir konsey işlevi görerek, sakinlerin sorunları dijital olarak gündeme getirmesine, tartışmasına ve çözüm önerileri geliştirmesine olanak tanır." },
+                { title: "Nesiller Arası Köprü", description: "Farklı yaş gruplarından insanları bir araya getirerek karşılıklı bilgi ve deneyim alışverişini teşvik eden bir ağ." },
+                { title: "Sessiz Çığlıklar Dijital Anlatı Platformu", description: "Toplumda yeterince sesini duyuramayan veya görmezden gelinen sorunların (yalnızlık, siber zorbalık vb.) birebir deneyimler aracılığıyla anlatıldığı ve empati oluşturulduğu bir dijital alan." },
+                { title: "Mikro-İklim Aktivizmi Haritası", description: "İlim değişikliğinin ve çevresel sorunların yerel etkilerini (mahalledeki ağaç kesimi, su kirliliği vb.) harita üzerinde işaretlemeyi, belgelemeyi ve bu sorunlara karşı yerel düzeyde eylem planları oluşturmayı sağlayan interaktif bir araç." }
+            ],
+            'Yaratıcı Sanat': [
+                { title: "Rastgele Enstrüman Orkestrası", description: "Her ay rastgele seçilen katılımcıların, daha önce çalmadıkları bir enstrümanı öğrenip kısa sürede bir parça sergiledikleri online bir topluluk." },
+                { title: "Rüya Çözümleyici ve Hikaye Üretici", description: "Kullanıcıların rüyalarını tarif ederek yapay zeka ile onların rüyalarından ilham alan kısa hikayeler veya sanat eserleri üreten bir uygulama." },
+                { title: "Görsel Şiir Hareketi", description: "Şiirlerin sadece metin olarak değil, çevre fotoğrafçılığı ve minimalist animasyonlarla birleştirilerek sunulduğu, sokak sanatına benzer dijital bir platform." },
+                { title: "Duygusal Harita & Anı Paylaşım Platformu", description: "Kullanıcıların fiziksel mekanlarla duygusal anılarını eşleştirebileceği, harita tabanlı bir sistem." },
+                { title: "Kişiselleştirilmiş Hikaye Yaratım Motoru", description: "Yapay zeka destekli, kullanıcıların basit anahtar kelimeler, ruh halleri veya karakter tercihleriyle tamamen kişiselleştirilmiş hikayeler oluşturan bir platform." }
+            ],
+            'Teknoloji ve İnovasyon': [
+                { title: "Akıllı Bitki Konuşmacısı", description: "Bitkinizin su, ışık veya toprak ihtiyacını, basit LED renk kodları ve hatta minik sesli uyarılarla size 'anlatan' bir sensör sistemi." },
+                { title: "Gerçek Zamanlı Duygu Filtresi", description: "Video görüşmeler sırasında yüz ifadelerinizi analiz ederek, karşınızdaki kişinin ruh halini daha iyi anlamanıza yardımcı olan, ancak yapay zeka ile abartısız bir şekilde ipuçları veren bir eklenti." },
+                { title: "Akıllı Mutfak Robotu (Modüler)", description: "Yiyecek israfını azaltmak için buzdolabınızdaki malzemeleri analiz edip size rastgele, ama uygulanabilir tarifler sunan, sürekli yeni modüller ekleyebileceğiniz bir yazılım." }
+            ],
+            'Topluluk Geliştirme': [
+                { title: "Beceri Takas Zinciri", description: "Para yerine becerilerin takas edildiği (örneğin, ben sana web sitesi yapayım, sen bana gitar çalmayı öğret) mahalle bazlı bir ağ." },
+                { title: "Komşu Destek Rotası", description: "Yaşlı veya engelli komşuların, basit ihtiyaçları için (alışveriş, ilaç alma, bankaya gitme) yakındaki gönüllü gençlerle eşleştirildiği bir mobil uygulama." },
+                { title: "Sokak Hikayecileri Projesi", description: "Her ay mahallenin farklı bir noktasında toplanıp, o sokağın veya binanın tarihiyle ilgili ilginç hikayeleri (eski sakinlerden veya arşivden) anlatan gönüllü rehberlerin olduğu bir inisiyatif." },
+                { title: "Topluluk Destekli Yerel Üretici Pazarı", description: "Bireysel üreticilerin (ev yapımı ürünler, el işleri vb.) ve yerel tüketicilerin doğrudan buluştuğu bir pazar yeri." },
+                { title: "Şans Esaslı Deneyim Takas Platformu", description: "Kullanıcıların eşyalar yerine 'deneyim' takas edebileceği, ancak takasın bir elementinin şansa bağlı olduğu bir platform." }
+            ],
+            'Eğitim': [
+                { title: "Oyunlaştırılmış Mikro Öğrenme", description: "Zor konuları (örneğin fizik, kimya) günlük hayattaki küçük etkileşimler ve mini oyunlarla öğreten, mobil odaklı bir eğitim platformu." },
+                { title: "Mentorluk Randevu Sistemi", description: "Öğrencilerin veya yeni mezunların, farklı sektörlerden profesyonellerle kısa 'kahve molası' sohbetleri için hızlıca randevu ayarlayabildiği bir platform." },
+                { title: "Sanal Saha Gezileri", description: "Dünyanın farklı yerlerindeki fabrikalara, laboratuvarlara veya tarihi alanlara sanal gerçeklik (VR/360 video) ile interaktif geziler düzenleyen bir eğitim portalı." },
+                { title: "Kişiselleştirilmiş Hobi Keşif Platformu", description: "Kullanıcıların ilgi alanlarına, boş zamanlarına ve hatta bütçelerine göre kişiselleştirilmiş hobi önerileri sunan bir platform." }
+            ],
+            'Dijital Miras': [
+                { title: "Dijital Miras ve Hikaye Arşivi", description: "Kişilerin kendi 'dijital miraslarını' oluşturmalarına ve sevdikleriyle güvenli bir şekilde paylaşmalarına olanak tanıyan bir site." }
+            ]
+        };
+
+        
+        let currentProjectIdeas = { ...staticProjectIdeas };
+
+        
+        function populateCategories() {
+            
+            categorySelect.innerHTML = '<option value="Hepsi">Hepsi</option>';
+           
+            for (const category in currentProjectIdeas) {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            }
+
+            
+            ideaCategoryInput.innerHTML = '';
+            editIdeaCategoryInput.innerHTML = ''; 
+            const categories = Object.keys(staticProjectIdeas);
+            categories.push('Kullanıcı Fikirleri');
+            
+            categories.forEach(category => {
+                const optionSubmit = document.createElement('option');
+                optionSubmit.value = category;
+                optionSubmit.textContent = category;
+                ideaCategoryInput.appendChild(optionSubmit);
+
+                const optionEdit = document.createElement('option');
+                optionEdit.value = category;
+                optionEdit.textContent = category;
+                editIdeaCategoryInput.appendChild(optionEdit);
+            });
+        }
+
+       
+        function generateIdea() {
+            const selectedCategory = categorySelect.value;
+            let ideasToChooseFrom = [];
+
+            if (selectedCategory === 'Hepsi') {
+                for (const category in currentProjectIdeas) {
+                    ideasToChooseFrom = ideasToChooseFrom.concat(currentProjectIdeas[category]);
+                }
+            } else if (currentProjectIdeas[selectedCategory]) {
+                ideasToChooseFrom = currentProjectIdeas[selectedCategory];
+            }
+
+            if (ideasToChooseFrom.length > 0) {
+                const randomIndex = Math.floor(Math.random() * ideasToChooseFrom.length);
+                const idea = ideasToChooseFrom[randomIndex];
+
+                ideaTitleDisplay.textContent = idea.title;
+                ideaDescriptionDisplay.textContent = idea.description;
+
+                
+                generatedIdeaDisplay.classList.remove('animate-fade-in-up');
+                void generatedIdeaDisplay.offsetWidth; 
+                generatedIdeaDisplay.classList.add('animate-fade-in-up');
+                generatedIdeaDisplay.classList.remove('hidden'); 
+            } else {
+                ideaTitleDisplay.textContent = "Fikir Bulunamadı";
+                ideaDescriptionDisplay.textContent = "Bu kategoride henüz fikir yok.";
+                generatedIdeaDisplay.classList.remove('hidden');
+                generatedIdeaDisplay.classList.remove('animate-fade-in-up'); 
+            }
+        }
+
+
+        async function loadUserIdeas() {
+           
+            const allIdeasCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'userIdeas');
+
+           
+            onSnapshot(allIdeasCollectionRef, (snapshot) => {
+                const allFetchedIdeas = [];
+                const fetchedUserSpecificIdeas = []; 
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const idea = { id: doc.id, ...data }; 
+                    allFetchedIdeas.push(idea);
+
+                    
+                    if (userId && idea.submittedBy === userId) {
+                        fetchedUserSpecificIdeas.push(idea);
+                    }
+                });
+
+                userIdeas = fetchedUserSpecificIdeas; 
+                
+                
+                currentProjectIdeas = { ...staticProjectIdeas };
+
+             
+                allFetchedIdeas.forEach(idea => {
+                    const categoryName = idea.category;
+                    if (!currentProjectIdeas[categoryName]) {
+                        currentProjectIdeas[categoryName] = [];
+                    }
+                    currentProjectIdeas[categoryName].push(idea);
+                });
+
+                populateCategories(); 
+                displayUserIdeas(); 
+            }, (error) => {
+                console.error("Fikirler yüklenirken hata oluştu:", error);
+            });
+        }
+
+        
+        function displayUserIdeas() {
+            userIdeasList.innerHTML = ''; 
+            if (userIdeas.length === 0) {
+                noUserIdeas.classList.remove('hidden');
+            } else {
+                noUserIdeas.classList.add('hidden');
+                userIdeas.forEach(idea => {
+                    const ideaElement = document.createElement('div');
+                    ideaElement.classList.add('bg-white', 'p-4', 'rounded-lg', 'shadow-sm', 'border', 'border-gray-200');
+                    ideaElement.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-700">${idea.title}</h3>
+                        <p class="text-gray-600 text-sm mb-2">Kategori: ${idea.category}</p>
+                        <p class="text-gray-700 mb-4">${idea.description}</p>
+                        <div class="flex gap-2">
+                            <button data-id="${idea.id}" data-title="${idea.title}" data-description="${idea.description}" data-category="${idea.category}" class="edit-idea-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-sm">Düzenle</button>
+                            <button data-id="${idea.id}" data-title="${idea.title}" class="delete-idea-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-sm">Sil</button>
+                        </div>
+                    `;
+                    userIdeasList.appendChild(ideaElement);
+                });
+            }
+
+            
+            if (userId) {
+                userIdeasSection.classList.remove('hidden');
+            }
+        }
+
+        
+        async function submitIdea() {
+            const title = ideaTitleInput.value.trim();
+            const description = ideaDescriptionInput.value.trim();
+            const category = ideaCategoryInput.value;
+
+            if (!title || !description) {
+              
+                await showMessageBox("Lütfen fikir başlığı ve açıklamasını boş bırakmayın.", 'info');
+                return;
+            }
+
+            if (!userId || userId === 'misafir' || userId === 'anonim_kullanici') { // Anonim kullanıcıyı da kontrol et
+                await showMessageBox("Fikir paylaşmak için lütfen geçerli bir kullanıcı olarak giriş yapın.", 'info');
+                return;
+            }
+
+            try {
+               
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'userIdeas'), {
+                    title: title,
+                    description: description,
+                    category: category,
+                    submittedBy: userId,
+                    timestamp: new Date()
+                });
+                await showMessageBox("Fikriniz başarıyla paylaşıldı!", 'info');
+                
+                ideaTitleInput.value = '';
+                ideaDescriptionInput.value = '';
+                
+            } catch (error) {
+                console.error("Fikir gönderilirken hata oluştu:", error);
+                await showMessageBox("Fikir gönderilirken bir hata oluştu. Lütfen tekrar deneyin.", 'info');
+            }
+        }
+
+        
+        function showMessageBox(message, type, onConfirmCallback = null) {
+            messageBoxText.textContent = message;
+            messageBoxCancelBtn.classList.add('hidden'); 
+            let resolvePromise;
+            const promise = new Promise(resolve => {
+                resolvePromise = resolve;
+            });
+
+            if (type === 'confirm') {
+                messageBoxOkBtn.textContent = 'Evet';
+                messageBoxCancelBtn.classList.remove('hidden');
+                messageBoxOkBtn.onclick = () => {
+                    customMessageBox.classList.add('hidden');
+                    if (onConfirmCallback) onConfirmCallback(true);
+                    resolvePromise(true);
+                };
+                messageBoxCancelBtn.onclick = () => {
+                    customMessageBox.classList.add('hidden');
+                    if (onConfirmCallback) onConfirmCallback(false);
+                    resolvePromise(false);
+                };
+            } else {
+                messageBoxOkBtn.textContent = 'Tamam';
+                messageBoxOkBtn.onclick = () => {
+                    customMessageBox.classList.add('hidden');
+                    resolvePromise(true);
+                };
+            }
+            customMessageBox.classList.remove('hidden');
+            return promise; 
+        }
+
+       
+        function openEditModal(id, title, description, category) {
+            currentEditingIdeaId = id;
+            editIdeaTitleInput.value = title;
+            editIdeaDescriptionInput.value = description;
+            editIdeaCategoryInput.value = category; 
+            editIdeaModal.classList.remove('hidden');
+        }
+
+        
+        function closeEditModal() {
+            editIdeaModal.classList.add('hidden');
+            currentEditingIdeaId = null; 
+        }
+
+        
+        async function saveEditedIdea() {
+            if (!currentEditingIdeaId) return;
+
+            const newTitle = editIdeaTitleInput.value.trim();
+            const newDescription = editIdeaDescriptionInput.value.trim();
+            const newCategory = editIdeaCategoryInput.value;
+
+            if (!newTitle || !newDescription) {
+                await showMessageBox("Lütfen fikir başlığı ve açıklamasını boş bırakmayın.", 'info');
+                return;
+            }
+
+            try {
+                const ideaRef = doc(db, 'artifacts', appId, 'public', 'data', 'userIdeas', currentEditingIdeaId);
+                await updateDoc(ideaRef, {
+                    title: newTitle,
+                    description: newDescription,
+                    category: newCategory
+                });
+                closeEditModal();
+                await showMessageBox("Fikriniz başarıyla güncellendi!", 'info');
+                
+            } catch (error) {
+                console.error("Fikir güncellenirken hata oluştu:", error);
+                await showMessageBox("Fikir güncellenirken bir hata oluştu. Lütfen tekrar deneyin.", 'info');
+            }
+        }
+
+      
+        async function deleteIdea(id, title) {
+            const confirmed = await showMessageBox(`"${title}" fikrini silmek istediğinizden emin misiniz?`, 'confirm');
+            if (confirmed) {
+                try {
+                    const ideaRef = doc(db, 'artifacts', appId, 'public', 'data', 'userIdeas', id);
+                    await deleteDoc(ideaRef);
+                    await showMessageBox("Fikriniz başarıyla silindi!", 'info');
+                  
+                } catch (error) {
+                    console.error("Fikir silinirken hata oluştu:", error);
+                    await showMessageBox("Fikir silinirken bir hata oluştu. Lütfen tekrar deneyin.", 'info');
+                }
+            }
+        }
+
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                loginStatus.textContent = `Hoş geldiniz!`;
+                ideaSubmissionSection.classList.remove('hidden'); 
+                userIdeasSection.classList.remove('hidden'); 
+            } else {
+                // 
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (error) {
+                        console.error("Özel token ile giriş başarısız:", error);
+                       
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    
+                    await signInAnonymously(auth);
+                }
+                userId = auth.currentUser?.uid || 'anonim_kullanici';
+                loginStatus.textContent = `Misafir olarak giriş yaptınız.`;
+                ideaSubmissionSection.classList.remove('hidden'); 
+                userIdeasSection.classList.remove('hidden'); 
+            }
+
+            loadUserIdeas();
+        });
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            populateCategories();
+            
+
+            
+            generateIdeaBtn.addEventListener('click', generateIdea);
+            submitIdeaBtn.addEventListener('click', submitIdea);
+            cancelEditBtn.addEventListener('click', closeEditModal);
+            saveEditBtn.addEventListener('click', saveEditedIdea);
+
+            
+            userIdeasList.addEventListener('click', (event) => {
+                if (event.target.classList.contains('edit-idea-btn')) {
+                    const id = event.target.dataset.id;
+                    const title = event.target.dataset.title;
+                    const description = event.target.dataset.description;
+                    const category = event.target.dataset.category;
+                    openEditModal(id, title, description, category);
+                } else if (event.target.classList.contains('delete-idea-btn')) {
+                    const id = event.target.dataset.id;
+                    const title = event.target.dataset.title;
+                    deleteIdea(id, title);
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
